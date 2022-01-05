@@ -1,0 +1,14 @@
+com/gobarber/BuildConfig.java
+ com.gobarber.BuildConfig
+com/gobarber/MainActivity.java
+ com.gobarber.MainActivity
+com/gobarber/ReactNativeFlipper.java
+ com.gobarber.ReactNativeFlipper
+ com.gobarber.ReactNativeFlipper$1
+ com.gobarber.ReactNativeFlipper$2
+ com.gobarber.ReactNativeFlipper$2$1
+com/facebook/react/PackageList.java
+ com.facebook.react.PackageList
+com/gobarber/MainApplication.java
+ com.gobarber.MainApplication
+ com.gobarber.MainApplication$1
