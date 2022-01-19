@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback, useRef } from 'react'
 import { Image, ScrollView, View, KeyboardAvoidingView, Platform } from 'react-native'
 import logoImg from '../../assets/logo.png'
 import Input from '../../components/Input'
@@ -6,8 +6,15 @@ import Button from '../../components/Button'
 import { Container, Title, ForgotPasswordButton, ForgotPasswordText, CreateAccountButton, CreateAccountText } from './styles'
 import Icon from 'react-native-vector-icons/Feather'
 import { useNavigation } from '@react-navigation/native'
+import { Form } from '@unform/mobile'
+import { FormHandles } from '@unform/core'
+
 
 const SignIn: React.FC = () => {
+  const formRef = useRef<FormHandles>(null)
+  const handleSignIn = useCallback((data: object)=>{
+    console.log(data)
+  },[])
   const navigation = useNavigation()
   return (
     <>
@@ -17,23 +24,27 @@ const SignIn: React.FC = () => {
         enabled
       >
         <ScrollView
-        keyboardShouldPersistTaps='handled'
-        contentContainerStyle={{flex:1}}
+          keyboardShouldPersistTaps='handled'
+          contentContainerStyle={{ flex: 1 }}
         >
           <Container>
 
             <Image source={logoImg} />
             <View>
-              <Title>Faça seu logon</Title>
+              <Title>Faça seu login</Title>
             </View>
 
-            <Input name="Email" icon="mail" />
+            <Form ref={formRef} onSubmit={handleSignIn}>
+              <Input name="Email" icon="mail" />
 
-            <Input name="Senha" icon="lock" />
+              <Input name="Senha" icon="lock" />
 
-            <Button onPress={() => { }}>
-              Entrar
-            </Button>
+              <Button onPress={() => {
+                formRef.current?.submitForm()
+               }} >
+                Entrar
+              </Button>
+            </Form>
 
             <ForgotPasswordButton onPress={() => { }}>
               <ForgotPasswordText>
