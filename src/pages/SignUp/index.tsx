@@ -8,10 +8,13 @@ import Icon from 'react-native-vector-icons/Feather'
 import { Form } from '@unform/mobile'
 import { useNavigation } from '@react-navigation/native'
 import { FormHandles } from '@unform/core'
+import { TextInput } from 'react-native-gesture-handler'
 
 const SignUp: React.FC = () => {
   const formRef = useRef<FormHandles>(null)
   const inputRef = useRef(null)
+  const emailInputRef = useRef<TextInput>(null)
+  const passwordInputRef = useRef<TextInput>(null)
 
   const handleSignUp = useCallback((data: object)=>{
     console.log(data)
@@ -36,9 +39,39 @@ const SignUp: React.FC = () => {
               <Title>Crie sua conta</Title>
             </View>
             <Form ref={formRef} onSubmit={handleSignUp}>
-              <Input name="Nome" icon="user" />
-              <Input name="Email" icon="mail" />
-              <Input name="Senha" icon="lock" />
+              <Input
+              autoCapitalize='words'
+              name="Nome"
+              icon="user"
+              returnKeyType='next'
+              onSubmitEditing={()=>{
+                emailInputRef.current?.focus()
+              }}
+              />
+              <Input
+              ref={emailInputRef}
+              autoCapitalize='none'
+              autoCorrect={false}
+              keyboardType='email-address'
+              name="Email"
+              icon="mail"
+              returnKeyType='next'
+              onSubmitEditing={()=>{
+                passwordInputRef.current?.focus()
+              }}
+              />
+
+
+              <Input
+              ref={passwordInputRef}
+              name="Senha"
+              icon="lock"
+              secureTextEntry
+              returnKeyType='send'
+              onSubmitEditing={()=>{
+                formRef.current?.submitForm()
+              }}
+              />
 
               <Button onPress={() => {
                 formRef.current?.submitForm()

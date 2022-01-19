@@ -1,5 +1,5 @@
 import React, { useCallback, useRef } from 'react'
-import { Image, ScrollView, View, KeyboardAvoidingView, Platform } from 'react-native'
+import { Image, ScrollView, View, KeyboardAvoidingView, Platform, TextInput } from 'react-native'
 import logoImg from '../../assets/logo.png'
 import Input from '../../components/Input'
 import Button from '../../components/Button'
@@ -12,6 +12,7 @@ import { FormHandles } from '@unform/core'
 
 const SignIn: React.FC = () => {
   const formRef = useRef<FormHandles>(null)
+  const passwordInputRef = useRef<TextInput>(null)
   const handleSignIn = useCallback((data: object)=>{
     console.log(data)
   },[])
@@ -35,9 +36,28 @@ const SignIn: React.FC = () => {
             </View>
 
             <Form ref={formRef} onSubmit={handleSignIn}>
-              <Input name="Email" icon="mail" />
+              <Input
+              autoCapitalize='none'
+              autoCorrect={false}
+              keyboardType='email-address'
+              name="Email"
+              icon="mail"
+              returnKeyType='next'
+              onSubmitEditing={()=>{
+                passwordInputRef.current?.focus()
+              }}
+              />
 
-              <Input name="Senha" icon="lock" />
+              <Input
+              ref={passwordInputRef}
+              name="Senha"
+              icon="lock"
+              secureTextEntry
+              returnKeyType='send'
+              onSubmitEditing={()=>{
+                formRef.current?.submitForm()
+              }}
+              />
 
               <Button onPress={() => {
                 formRef.current?.submitForm()
