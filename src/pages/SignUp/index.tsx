@@ -1,5 +1,5 @@
 import React, { useCallback, useRef } from 'react'
-import { Image, ScrollView, View, KeyboardAvoidingView, Platform } from 'react-native'
+import { Image, ScrollView, View, KeyboardAvoidingView, Platform, Alert } from 'react-native'
 import logoImg from '../../assets/logo.png'
 import Input from '../../components/Input'
 import Button from '../../components/Button'
@@ -9,6 +9,14 @@ import { Form } from '@unform/mobile'
 import { useNavigation } from '@react-navigation/native'
 import { FormHandles } from '@unform/core'
 import { TextInput } from 'react-native-gesture-handler'
+import * as Yup from 'yup'
+import getValidationErrors from '../../utils/getValidationErrors'
+
+interface SignUpFormData{
+  name: string,
+  email: string,
+  password: string
+}
 
 const SignUp: React.FC = () => {
   const formRef = useRef<FormHandles>(null)
@@ -16,9 +24,46 @@ const SignUp: React.FC = () => {
   const emailInputRef = useRef<TextInput>(null)
   const passwordInputRef = useRef<TextInput>(null)
 
-  const handleSignUp = useCallback((data: object)=>{
-    console.log(data)
-  },[])
+  const handleSignUp = useCallback(
+    async (data: SignUpFormData) => {
+      try {
+        formRef.current?.setErrors({});
+        const schema = Yup.object().shape({
+          name: Yup.string(). required('Nome obrigatório'),
+          email: Yup.string()
+            .email('Digite email válido')
+            .required('Email obrigatório'),
+          password: Yup.string().required('Senha obrigatória').min(6, 'No mínimo 6 caracteres'),
+        });
+
+        await schema.validate(data, {
+          abortEarly: false,
+        });
+
+        console.log(data)
+
+        // await signIn({
+        //   email: data.email,
+        //   password: data.password,
+        // });
+
+        // history.push('/dashboard');
+      } catch (err) {
+        if (err instanceof Yup.ValidationError) {
+          const errors = getValidationErrors(err);
+
+          formRef.current?.setErrors(errors);
+
+          return;
+        }
+        Alert.alert(
+          'Erro no cadastro',
+          'Ocorreu um erro ao fazer cadastro, cheque as credenciais'
+        )
+      }
+    },
+    [],
+  );
 
   const navigation = useNavigation()
   return (
@@ -41,8 +86,9 @@ const SignUp: React.FC = () => {
             <Form ref={formRef} onSubmit={handleSignUp}>
               <Input
               autoCapitalize='words'
-              name="Nome"
+              name="name"
               icon="user"
+              placeholder='Nome'
               returnKeyType='next'
               onSubmitEditing={()=>{
                 emailInputRef.current?.focus()
@@ -53,7 +99,8 @@ const SignUp: React.FC = () => {
               autoCapitalize='none'
               autoCorrect={false}
               keyboardType='email-address'
-              name="Email"
+              placeholder='Email'
+              name="email"
               icon="mail"
               returnKeyType='next'
               onSubmitEditing={()=>{
@@ -64,8 +111,9 @@ const SignUp: React.FC = () => {
 
               <Input
               ref={passwordInputRef}
-              name="Senha"
+              name="password"
               icon="lock"
+              placeholder='Senha'
               secureTextEntry
               returnKeyType='send'
               onSubmitEditing={()=>{
