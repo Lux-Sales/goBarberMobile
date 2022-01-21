@@ -11,6 +11,7 @@ import { FormHandles } from '@unform/core'
 import { TextInput } from 'react-native-gesture-handler'
 import * as Yup from 'yup'
 import getValidationErrors from '../../utils/getValidationErrors'
+import api from '../../services/api'
 
 interface SignUpFormData{
   name: string,
@@ -40,14 +41,13 @@ const SignUp: React.FC = () => {
           abortEarly: false,
         });
 
-        console.log(data)
+        console.log('chegou no post')
+        const resp = await api.post('/users', data)
+        console.log('passou do post ', resp)
 
-        // await signIn({
-        //   email: data.email,
-        //   password: data.password,
-        // });
+        Alert.alert('Cadastro realizado com sucesso','Você já pode fazer login')
+        navigation.goBack()
 
-        // history.push('/dashboard');
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
           const errors = getValidationErrors(err);
@@ -144,3 +144,6 @@ const SignUp: React.FC = () => {
 }
 
 export default SignUp;
+
+
+
